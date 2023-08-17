@@ -44,6 +44,10 @@ const GameLoop = function() {
       console.log(`It\'s ${activePlayer.name}'s turn!`);
       let row = prompt('Please choose the row');
       let column = prompt('Please choose the column');
+      if(board.getBoard()[row][column] > 0) {
+        console.log('Square already taken, please choose another one.')
+        continue;
+      }
       board.markSquare(activePlayer.marker, row, column, board.getBoard());
       checkResult();
       switchActivePlayer();
