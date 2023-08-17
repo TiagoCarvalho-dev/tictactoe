@@ -45,7 +45,7 @@ const GameLoop = function() {
       let row = prompt('Please choose the row');
       let column = prompt('Please choose the column');
       if(board.getBoard()[row][column] > 0) {
-        console.log('Square already taken, please choose another one.')
+        console.log('Square already taken, please choose another one.');
         continue;
       }
       board.markSquare(activePlayer.marker, row, column, board.getBoard());
@@ -53,7 +53,7 @@ const GameLoop = function() {
       switchActivePlayer();
     }
     console.log(JSON.stringify(board.getBoard()));
-    console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
+    displayResult();
   }
 
   let victoriousPlayer = 0;
@@ -72,6 +72,19 @@ const GameLoop = function() {
        (board.getBoard()[0][2] === board.getBoard()[1][1] && board.getBoard()[1][1] === board.getBoard()[2][0])) {
         if(board.getBoard()[1][1] === 1) victoriousPlayer = players[0];
         if(board.getBoard()[1][1] === 2) victoriousPlayer = players[1];
+    }
+    if(board.getBoard()[0][0] > 0 && board.getBoard()[0][1] > 0 && board.getBoard()[0][2] > 0 &&
+       board.getBoard()[1][0] > 0 && board.getBoard()[1][1] > 0 && board.getBoard()[1][2] > 0 &&
+       board.getBoard()[2][0] > 0 && board.getBoard()[2][1] > 0 && board.getBoard()[2][2] > 0) {
+      return victoriousPlayer = 'No one';
+    }
+  }
+
+  const displayResult = () => {
+    if(victoriousPlayer === 'No one') {
+      return console.log(`The game ended in a Draw!`);
+    } else {
+      return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
     }
   }
 
