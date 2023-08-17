@@ -6,7 +6,7 @@ const Board = function() {
   for(let i = 0; i < rows; i++) {
     board.push([]);
     for(let j = 0; j < column; j++) {
-      board[i].push('0');
+      board[i].push(0);
     }
   }
 
@@ -24,11 +24,11 @@ const GameLoop = function() {
 
   const players = [{
     name: 'PlayerOne',
-    marker: '1'
+    marker: 1
   },
   {
     name: 'PlayerTwo',
-    marker: '2'
+    marker: 2
   }];
 
   let activePlayer = players[0];
@@ -39,17 +39,37 @@ const GameLoop = function() {
 
   const playGame = () => {
     console.log('Hello, let\'s play');
-    for(let i = 0; i < 4; i++) {
+    while(victoriousPlayer === 0) {
       console.log(JSON.stringify(board.getBoard()));
       console.log(`It\'s ${activePlayer.name}'s turn!`);
       let row = prompt('Please choose the row');
       let column = prompt('Please choose the column');
       board.markSquare(activePlayer.marker, row, column, board.getBoard());
+      checkResult();
       switchActivePlayer();
+    }
+    console.log(JSON.stringify(board.getBoard()));
+    console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
+  }
+
+  let victoriousPlayer = 0;
+
+  const checkResult = () => {
+    for(let i = 0; i < 3; i++) {
+      if(board.getBoard()[i][0] === board.getBoard()[i][1] && board.getBoard()[i][1] === board.getBoard()[i][2]) {
+        if(board.getBoard()[i][0] === 1) victoriousPlayer = players[0];
+        if(board.getBoard()[i][0] === 2) victoriousPlayer = players[1];
+      } else if(board.getBoard()[0][i] === board.getBoard()[1][i] && board.getBoard()[1][i] === board.getBoard()[2][i]) {
+        if(board.getBoard()[0][i] === 1) victoriousPlayer = players[0];
+        if(board.getBoard()[0][i] === 2) victoriousPlayer = players[1];
+      }
+    }
+    if((board.getBoard()[0][0] === board.getBoard()[1][1] && board.getBoard()[1][1] === board.getBoard()[2][2]) ||
+       (board.getBoard()[0][2] === board.getBoard()[1][1] && board.getBoard()[1][1] === board.getBoard()[2][0])) {
+        if(board.getBoard()[1][1] === 1) victoriousPlayer = players[0];
+        if(board.getBoard()[1][1] === 2) victoriousPlayer = players[1];
     }
   }
 
-  const getActivePlayer = () => activePlayer;
-
-  return {playGame, getActivePlayer};
+  return {playGame};
 }
