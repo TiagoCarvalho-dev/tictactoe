@@ -19,9 +19,7 @@ const Board = function() {
   return {getBoard, markSquare};
 }
 
-const GameLoop = function() {
-  const board = Board();
-
+const Players = function() {
   const players = [{
     name: 'PlayerOne',
     marker: 1
@@ -31,10 +29,19 @@ const GameLoop = function() {
     marker: 2
   }];
 
-  let activePlayer = players[0];
+  const getPlayers = () => players;
+
+  return {getPlayers};
+}
+
+const GameLoop = function() {
+  const board = Board();
+  const players = Players();
+
+  let activePlayer = players.getPlayers()[0];
 
   const switchActivePlayer = () => {
-    activePlayer = activePlayer === players[0] ? players[1] : players[0];
+    activePlayer = activePlayer === players.getPlayers()[0] ? players.getPlayers()[1] : players.getPlayers()[0];
   }
 
   const playGame = () => {
@@ -61,17 +68,17 @@ const GameLoop = function() {
   const checkResult = () => {
     for(let i = 0; i < 3; i++) {
       if(board.getBoard()[i][0] === board.getBoard()[i][1] && board.getBoard()[i][1] === board.getBoard()[i][2]) {
-        if(board.getBoard()[i][0] === 1) victoriousPlayer = players[0];
-        if(board.getBoard()[i][0] === 2) victoriousPlayer = players[1];
+        if(board.getBoard()[i][0] === 1) victoriousPlayer = players.getPlayers()[0];
+        if(board.getBoard()[i][0] === 2) victoriousPlayer = players.getPlayers()[1];
       } else if(board.getBoard()[0][i] === board.getBoard()[1][i] && board.getBoard()[1][i] === board.getBoard()[2][i]) {
-        if(board.getBoard()[0][i] === 1) victoriousPlayer = players[0];
-        if(board.getBoard()[0][i] === 2) victoriousPlayer = players[1];
+        if(board.getBoard()[0][i] === 1) victoriousPlayer = players.getPlayers()[0];
+        if(board.getBoard()[0][i] === 2) victoriousPlayer = players.getPlayers()[1];
       }
     }
     if((board.getBoard()[0][0] === board.getBoard()[1][1] && board.getBoard()[1][1] === board.getBoard()[2][2]) ||
        (board.getBoard()[0][2] === board.getBoard()[1][1] && board.getBoard()[1][1] === board.getBoard()[2][0])) {
-        if(board.getBoard()[1][1] === 1) victoriousPlayer = players[0];
-        if(board.getBoard()[1][1] === 2) victoriousPlayer = players[1];
+        if(board.getBoard()[1][1] === 1) victoriousPlayer = players.getPlayers()[0];
+        if(board.getBoard()[1][1] === 2) victoriousPlayer = players.getPlayers()[1];
     }
     if(board.getBoard()[0][0] > 0 && board.getBoard()[0][1] > 0 && board.getBoard()[0][2] > 0 &&
        board.getBoard()[1][0] > 0 && board.getBoard()[1][1] > 0 && board.getBoard()[1][2] > 0 &&
