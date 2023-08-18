@@ -97,3 +97,18 @@ const GameLoop = function() {
 
   return {playGame};
 }
+
+const GameUI = function() {
+  const boardContainer = document.querySelector('.board-container');
+
+  const buildBoardUI = (board) => {
+    board.forEach((row, rowIndex) => row.forEach((column, columnIndex) => {
+      const newDiv = boardContainer.appendChild(document.createElement('div'));
+      const newButton = newDiv.appendChild(document.createElement('button'));
+      newButton.dataset.row = rowIndex;
+      newButton.dataset.column = columnIndex;
+    }));
+  }
+
+  return {buildBoardUI};
+}

@@ -10,6 +10,14 @@ header {
   align-items: center;
 }
 
+.board-container {
+  border: solid 2px black;
+}
+
+.board-container > div {
+  border: solid 2px red;
+}
+
 footer {
   display: flex;
   justify-content: center;
