@@ -48,17 +48,6 @@ const GameLoop = function() {
   const playGame = () => {
     console.log('Hello, let\'s play');
     gameUI.buildBoardUI(board.getBoard());
-    // while(victoriousPlayer === 0) {
-    //   if(board.getBoard()[row][column] > 0) {
-    //     console.log('Square already taken, please choose another one.');
-    //     continue;
-    //   }
-    //   board.markSquare(activePlayer.marker, row, column, board.getBoard());
-    //   checkResult();
-    //   switchActivePlayer();
-    // }
-    // console.log(JSON.stringify(board.getBoard()));
-    // displayResult();
   }
 
   const playRound = (row, column) => {
@@ -68,31 +57,33 @@ const GameLoop = function() {
     }
     board.markSquare(activePlayer.marker, row, column, board.getBoard());
     gameUI.showSquareValue(row, column, board.getBoard());
-    console.log(board.getBoard());
-    checkResult();
+    checkResult(board.getBoard());
+    if(victoriousPlayer !== 0) {
+      displayResult();
+    }
     switchActivePlayer();
   }
 
   let victoriousPlayer = 0;
 
-  const checkResult = () => {
+  const checkResult = (board) => {
     for(let i = 0; i < 3; i++) {
-      if(board.getBoard()[i][0] === board.getBoard()[i][1] && board.getBoard()[i][1] === board.getBoard()[i][2]) {
-        if(board.getBoard()[i][0] === 1) victoriousPlayer = players.getPlayers()[0];
-        if(board.getBoard()[i][0] === 2) victoriousPlayer = players.getPlayers()[1];
-      } else if(board.getBoard()[0][i] === board.getBoard()[1][i] && board.getBoard()[1][i] === board.getBoard()[2][i]) {
-        if(board.getBoard()[0][i] === 1) victoriousPlayer = players.getPlayers()[0];
-        if(board.getBoard()[0][i] === 2) victoriousPlayer = players.getPlayers()[1];
+      if(board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
+        if(board[i][0] === 1) victoriousPlayer = players.getPlayers()[0];
+        if(board[i][0] === 2) victoriousPlayer = players.getPlayers()[1];
+      } else if(board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
+        if(board[0][i] === 1) victoriousPlayer = players.getPlayers()[0];
+        if(board[0][i] === 2) victoriousPlayer = players.getPlayers()[1];
       }
     }
-    if((board.getBoard()[0][0] === board.getBoard()[1][1] && board.getBoard()[1][1] === board.getBoard()[2][2]) ||
-       (board.getBoard()[0][2] === board.getBoard()[1][1] && board.getBoard()[1][1] === board.getBoard()[2][0])) {
-        if(board.getBoard()[1][1] === 1) victoriousPlayer = players.getPlayers()[0];
-        if(board.getBoard()[1][1] === 2) victoriousPlayer = players.getPlayers()[1];
+    if((board[0][0] === board[1][1] && board[1][1] === board[2][2]) ||
+       (board[0][2] === board[1][1] && board[1][1] === board[2][0])) {
+        if(board[1][1] === 1) victoriousPlayer = players.getPlayers()[0];
+        if(board[1][1] === 2) victoriousPlayer = players.getPlayers()[1];
     }
-    if(board.getBoard()[0][0] > 0 && board.getBoard()[0][1] > 0 && board.getBoard()[0][2] > 0 &&
-       board.getBoard()[1][0] > 0 && board.getBoard()[1][1] > 0 && board.getBoard()[1][2] > 0 &&
-       board.getBoard()[2][0] > 0 && board.getBoard()[2][1] > 0 && board.getBoard()[2][2] > 0) {
+    if(board[0][0] > 0 && board[0][1] > 0 && board[0][2] > 0 &&
+       board[1][0] > 0 && board[1][1] > 0 && board[1][2] > 0 &&
+       board[2][0] > 0 && board[2][1] > 0 && board[2][2] > 0) {
       return victoriousPlayer = 'No one';
     }
   }
