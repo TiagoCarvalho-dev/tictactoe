@@ -22,11 +22,11 @@ const Board = function() {
 const Players = function() {
   const players = [{
     name: 'PlayerOne',
-    marker: 1
+    marker: 'X'
   },
   {
     name: 'PlayerTwo',
-    marker: 2
+    marker: 'O'
   }];
 
   const getPlayers = () => players;
@@ -70,17 +70,17 @@ const GameLoop = function() {
   const checkResult = (board) => {
     for(let i = 0; i < 3; i++) {
       if(board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
-        if(board[i][0] === 1) victoriousPlayer = players.getPlayers()[0];
-        if(board[i][0] === 2) victoriousPlayer = players.getPlayers()[1];
+        if(board[i][0] === 'X') victoriousPlayer = players.getPlayers()[0];
+        if(board[i][0] === 'O') victoriousPlayer = players.getPlayers()[1];
       } else if(board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
-        if(board[0][i] === 1) victoriousPlayer = players.getPlayers()[0];
-        if(board[0][i] === 2) victoriousPlayer = players.getPlayers()[1];
+        if(board[0][i] === 'X') victoriousPlayer = players.getPlayers()[0];
+        if(board[0][i] === 'O') victoriousPlayer = players.getPlayers()[1];
       }
     }
     if((board[0][0] === board[1][1] && board[1][1] === board[2][2]) ||
        (board[0][2] === board[1][1] && board[1][1] === board[2][0])) {
-        if(board[1][1] === 1) victoriousPlayer = players.getPlayers()[0];
-        if(board[1][1] === 2) victoriousPlayer = players.getPlayers()[1];
+        if(board[1][1] === 'X') victoriousPlayer = players.getPlayers()[0];
+        if(board[1][1] === 'O') victoriousPlayer = players.getPlayers()[1];
     }
     if(board[0][0] > 0 && board[0][1] > 0 && board[0][2] > 0 &&
        board[1][0] > 0 && board[1][1] > 0 && board[1][2] > 0 &&
