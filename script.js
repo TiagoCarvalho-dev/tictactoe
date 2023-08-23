@@ -6,7 +6,7 @@ const Board = function() {
   for(let i = 0; i < rows; i++) {
     board.push([]);
     for(let j = 0; j < column; j++) {
-      board[i].push(0);
+      board[i].push('');
     }
   }
 
@@ -37,6 +37,7 @@ const Players = function() {
 const GameLoop = function() {
   const board = Board();
   const players = Players();
+  const gameUI = GameUI();
 
   let activePlayer = players.getPlayers()[0];
 
@@ -46,21 +47,30 @@ const GameLoop = function() {
 
   const playGame = () => {
     console.log('Hello, let\'s play');
-    while(victoriousPlayer === 0) {
-      console.log(JSON.stringify(board.getBoard()));
-      console.log(`It\'s ${activePlayer.name}'s turn!`);
-      let row = prompt('Please choose the row');
-      let column = prompt('Please choose the column');
-      if(board.getBoard()[row][column] > 0) {
-        console.log('Square already taken, please choose another one.');
-        continue;
-      }
-      board.markSquare(activePlayer.marker, row, column, board.getBoard());
-      checkResult();
-      switchActivePlayer();
+    gameUI.buildBoardUI(board.getBoard());
+    // while(victoriousPlayer === 0) {
+    //   if(board.getBoard()[row][column] > 0) {
+    //     console.log('Square already taken, please choose another one.');
+    //     continue;
+    //   }
+    //   board.markSquare(activePlayer.marker, row, column, board.getBoard());
+    //   checkResult();
+    //   switchActivePlayer();
+    // }
+    // console.log(JSON.stringify(board.getBoard()));
+    // displayResult();
+  }
+
+  const playRound = (row, column) => {
+    if(board.getBoard()[row][column] !== '') {
+      console.log('Square already taken, please choose another one.');
+      return
     }
-    console.log(JSON.stringify(board.getBoard()));
-    displayResult();
+    board.markSquare(activePlayer.marker, row, column, board.getBoard());
+    gameUI.showSquareValue(row, column, board.getBoard());
+    console.log(board.getBoard());
+    checkResult();
+    switchActivePlayer();
   }
 
   let victoriousPlayer = 0;
@@ -95,20 +105,28 @@ const GameLoop = function() {
     }
   }
 
-  return {playGame};
+  return {playGame, playRound};
 }
 
 const GameUI = function() {
-  const boardContainer = document.querySelector('.board-container');
 
   const buildBoardUI = (board) => {
+    const gameLoop = GameLoop();
+    const boardContainer = document.querySelector('.board-container');
+
     board.forEach((row, rowIndex) => row.forEach((column, columnIndex) => {
       const newDiv = boardContainer.appendChild(document.createElement('div'));
       const newButton = newDiv.appendChild(document.createElement('button'));
       newButton.dataset.row = rowIndex;
       newButton.dataset.column = columnIndex;
+      newButton.textContent = board[rowIndex][columnIndex];
+      newButton.addEventListener('click', () => gameLoop.playRound(newButton.dataset.row, newButton.dataset.column));
     }));
   }
 
-  return {buildBoardUI};
+  const showSquareValue = (row, column, board) => {
+    document.querySelector(`[data-row='${row}'][data-column='${column}']`).textContent = board[row][column];
+  }
+
+  return {buildBoardUI, showSquareValue};
 }

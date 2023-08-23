@@ -10,12 +10,25 @@ header {
   align-items: center;
 }
 
+.main-game {
+  display: flex;
+  justify-content: center;
+}
+
 .board-container {
+  display: grid;
+  grid-template-columns: repeat(3, 150px);
+  grid-template-rows: repeat(3, 150px);
   border: solid 2px black;
 }
 
 .board-container > div {
   border: solid 2px red;
+}
+
+.board-container > div > button {
+  height: 140px;
+  width: 140px;
 }
 
 footer {
