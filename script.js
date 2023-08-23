@@ -60,6 +60,7 @@ const GameLoop = function() {
     checkResult(board.getBoard());
     if(victoriousPlayer !== 0) {
       displayResult();
+      endGame();
     }
     switchActivePlayer();
   }
@@ -95,6 +96,8 @@ const GameLoop = function() {
       return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
     }
   }
+
+  const endGame = () => document.querySelectorAll('button').forEach(button => button.disabled = true);
 
   return {playGame, playRound};
 }
