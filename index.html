@@ -6,15 +6,31 @@
   <title>Tic-Tac-Toe</title>
   <link rel="stylesheet" href="./style.css">
   <link rel="stylesheet" href="./normalize.css">
-  <script src="./script.js"></script>
+  <script src="./script.js" defer></script>
 </head>
 <body>
-  <header>
-    <h1>TIC-TAC-TOE!</h1>
-  </header>
-  <div class="main-game">
+  <div class="welcome-container">
+    <h1>WELCOME TO TIC-TAC-TOE!</h1>
+    <button class="play-game-button">PLAY GAME</button>
+  </div>
+  <div class="game-mode-container hidden" >
+    <button class="vs-player">VS Player</button>
+    <button class="vs-computer">VS Computer</button>
+  </div>
+  <div class="player-names-container hidden">
+    <div class="player-one-container">
+      <label for="player-one">Player One:</label>
+      <input type="text" id="player-one" name="player-one">
+      <button class="player-one-confirm-button">Confirm</button>
+    </div>
+    <div class="player-two-container">
+      <label for="player-two">Player Two:</label>
+      <input type="text" id="player-two" name="player-two">
+      <button class="player-two-confirm-button">Confirm</button>
+    </div>
+  </div>
+  <div class="main-game hidden">
     <div class="board-container">
-
     </div>
   </div>
   <footer>
