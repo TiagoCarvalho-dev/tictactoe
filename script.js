@@ -38,6 +38,7 @@ const GameLoop = function() {
   const board = Board();
   const players = Players();
   const gameUI = GameUI();
+  const gameMenuUI = GameMenuUI();
 
   let activePlayer = players.getPlayers()[0];
 
@@ -47,6 +48,7 @@ const GameLoop = function() {
 
   const playGame = () => {
     console.log('Hello, let\'s play');
+    gameUI.removeBoardUI();
     gameUI.buildBoardUI(board.getBoard());
   }
 
@@ -61,6 +63,7 @@ const GameLoop = function() {
     if(victoriousPlayer !== 0) {
       displayResult();
       endGame();
+      gameMenuUI.playAgainButton();
     }
     switchActivePlayer();
   }
@@ -82,9 +85,9 @@ const GameLoop = function() {
         if(board[1][1] === 'X') victoriousPlayer = players.getPlayers()[0];
         if(board[1][1] === 'O') victoriousPlayer = players.getPlayers()[1];
     }
-    if(board[0][0] > 0 && board[0][1] > 0 && board[0][2] > 0 &&
-       board[1][0] > 0 && board[1][1] > 0 && board[1][2] > 0 &&
-       board[2][0] > 0 && board[2][1] > 0 && board[2][2] > 0) {
+    if(board[0][0] !== '' && board[0][1] !== '' && board[0][2] !== '' &&
+       board[1][0] !== '' && board[1][1] !== '' && board[1][2] !== '' &&
+       board[2][0] !== '' && board[2][1] !== '' && board[2][2] !== '') {
       return victoriousPlayer = 'No one';
     }
   }
@@ -97,16 +100,16 @@ const GameLoop = function() {
     }
   }
 
-  const endGame = () => document.querySelectorAll('button').forEach(button => button.disabled = true);
+  const endGame = () => document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
 
   return {playGame, playRound};
 }
 
 const GameUI = function() {
+  const boardContainer = document.querySelector('.board-container');
 
   const buildBoardUI = (board) => {
     const gameLoop = GameLoop();
-    const boardContainer = document.querySelector('.board-container');
 
     board.forEach((row, rowIndex) => row.forEach((column, columnIndex) => {
       const newDiv = boardContainer.appendChild(document.createElement('div'));
@@ -118,11 +121,17 @@ const GameUI = function() {
     }));
   }
 
+  const removeBoardUI = () => {
+    while(boardContainer.firstChild) {
+      boardContainer.removeChild(boardContainer.lastChild);
+    }
+  }
+
   const showSquareValue = (row, column, board) => {
     document.querySelector(`[data-row='${row}'][data-column='${column}']`).textContent = board[row][column];
   }
 
-  return {buildBoardUI, showSquareValue};
+  return {buildBoardUI, removeBoardUI, showSquareValue};
 }
 
 const GameMenuUI = function() {
@@ -173,7 +182,25 @@ const GameMenuUI = function() {
     }
   });
 
-  return {playGameButton, getPlayerOne, getPlayerTwo};
+  const playAgainButton = () => document.querySelector('.play-again-button').addEventListener('click', () => {
+    document.querySelector('.main-game').classList.add('hidden');
+    document.querySelector('.game-mode-container').classList.remove('hidden');
+    resetPlayerInformation();
+    playGameButton();
+  });
+
+  const resetPlayerInformation = () => {
+    document.querySelector('#player-one').value = '';
+    document.querySelector('#player-two').value = '';
+    document.querySelector('.player-one-confirm-button').disabled = false;
+    document.querySelector('.player-two-confirm-button').disabled = false;
+    document.querySelector('#player-one').disabled = false;
+    document.querySelector('#player-two').disabled = false;
+    document.querySelector('.player-one-confirm-button').textContent = 'Confirm';
+    document.querySelector('.player-two-confirm-button').textContent = 'Confirm';
+  }
+
+  return {playGameButton, playAgainButton, getPlayerOne, getPlayerTwo};
 }
 
 GameMenuUI().playGameButton();
