@@ -12,20 +12,34 @@ const Board = function() {
 
   const getBoard = () => board;
 
-  const markSquare = function(playerMarker, row, column, board) {
-    board[row][column] = playerMarker;
+  const markSquare = (playerMarker, row, column, board) => board[row][column] = playerMarker;
+
+  let randomRow;
+  let randomColumn;
+  
+  const markRandomSquare = () => {
+    randomRow = Math.floor(Math.random() * 3);
+    randomColumn = Math.floor(Math.random() * 3);
+    if(board[randomRow][randomColumn] !== '') {
+      markRandomSquare();
+    } else {
+    board[randomRow][randomColumn] = 'O';
+    }
   }
 
-  return {getBoard, markSquare};
+  const getRandomRowValue = () => randomRow;
+  const getRandomColumnValue = () => randomColumn;
+
+  return {getBoard, markSquare, markRandomSquare, getRandomRowValue, getRandomColumnValue};
 }
 
 const Players = function() {
   const players = [{
-    name: GameMenuUI().getPlayerOne(),
+    name: 'Player One',
     marker: 'X'
   },
   {
-    name: GameMenuUI().getPlayerTwo(),
+    name: 'Player Two',
     marker: 'O'
   }];
 
@@ -47,12 +61,12 @@ const GameLoop = function() {
   }
 
   const playGame = () => {
-    console.log('Hello, let\'s play');
+    console.log('Hello');
     gameUI.removeBoardUI();
     gameUI.buildBoardUI(board.getBoard());
   }
 
-  const playRound = (row, column) => {
+  const playRoundVsPlayer = (row, column) => {
     if(board.getBoard()[row][column] !== '') {
       console.log('Square already taken, please choose another one.');
       return
@@ -64,8 +78,34 @@ const GameLoop = function() {
       displayResult();
       endGame();
       gameMenuUI.playAgainButton();
+      return
     }
     switchActivePlayer();
+  }
+
+  const playRoundVsComputer = (row, column) => {
+    if(board.getBoard()[row][column] !== '') {
+      console.log('Square already taken, please choose another one.');
+      return
+    }
+    board.markSquare(activePlayer.marker, row, column, board.getBoard());
+    gameUI.showSquareValue(row, column, board.getBoard());
+    checkResult(board.getBoard());
+    if(victoriousPlayer !== 0) {
+      displayResult();
+      endGame();
+      gameMenuUI.playAgainButton();
+      return;
+    }
+    board.markRandomSquare();
+    gameUI.showSquareValue(board.getRandomRowValue(), board.getRandomColumnValue(), board.getBoard());
+    checkResult(board.getBoard());
+    if(victoriousPlayer !== 0) {
+      displayResult();
+      endGame();
+      gameMenuUI.playAgainButton();
+      return;
+    }
   }
 
   let victoriousPlayer = 0;
@@ -102,7 +142,7 @@ const GameLoop = function() {
 
   const endGame = () => document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
 
-  return {playGame, playRound};
+  return {playGame, playRoundVsPlayer, playRoundVsComputer};
 }
 
 const GameUI = function() {
@@ -110,6 +150,7 @@ const GameUI = function() {
 
   const buildBoardUI = (board) => {
     const gameLoop = GameLoop();
+    const gameMenuUI = GameMenuUI();
 
     board.forEach((row, rowIndex) => row.forEach((column, columnIndex) => {
       const newDiv = boardContainer.appendChild(document.createElement('div'));
@@ -117,7 +158,11 @@ const GameUI = function() {
       newButton.dataset.row = rowIndex;
       newButton.dataset.column = columnIndex;
       newButton.textContent = board[rowIndex][columnIndex];
-      newButton.addEventListener('click', () => gameLoop.playRound(newButton.dataset.row, newButton.dataset.column));
+      if() {
+        newButton.addEventListener('click', () => gameLoop.playRoundVsComputer(newButton.dataset.row, newButton.dataset.column));
+      } else {
+        newButton.addEventListener('click', () => gameLoop.playRoundVsPlayer(newButton.dataset.row, newButton.dataset.column));
+      }
     }));
   }
 
@@ -135,16 +180,12 @@ const GameUI = function() {
 }
 
 const GameMenuUI = function() {
-  let playerOne;
-  let playerTwo;
-
-  const getPlayerOne = () => playerOne;
-  const getPlayerTwo = () => playerTwo;
 
   const playGameButton = () => document.querySelector('.play-game-button').addEventListener('click', () => {
     document.querySelector('.welcome-container').classList.add('hidden');
     document.querySelector('.game-mode-container').classList.remove('hidden');
     vsPlayerButton();
+    vsComputerButton();
   });
 
   const vsPlayerButton = () => document.querySelector('.vs-player').addEventListener('click', () => {
@@ -154,9 +195,14 @@ const GameMenuUI = function() {
     playerTwoConfirmButton();
   });
 
+  const vsComputerButton = () => document.querySelector('.vs-computer').addEventListener('click', () => {
+    document.querySelector('.game-mode-container').classList.add('hidden');
+    document.querySelector('.main-game').classList.remove('hidden');
+    GameLoop().playGame();
+  });
+
   const playerOneConfirmButton = () => document.querySelector('.player-one-confirm-button').addEventListener('click', () => {
     playerOne = document.querySelector('#player-one').value;
-    Players().getPlayers()[0].name = playerOne;
     if(document.querySelector('.player-two-confirm-button').textContent === 'Confirm') {
       document.querySelector('.player-one-confirm-button').textContent = 'Waiting for player two';
       document.querySelector('#player-one').disabled = true;
@@ -170,7 +216,6 @@ const GameMenuUI = function() {
 
   const playerTwoConfirmButton = () => document.querySelector('.player-two-confirm-button').addEventListener('click', () => {
     playerTwo = document.querySelector('#player-two').value;
-    Players().getPlayers()[1].name = playerTwo;
     if(document.querySelector('.player-one-confirm-button').textContent === 'Confirm') {
       document.querySelector('.player-two-confirm-button').textContent = 'Waiting for player one';
       document.querySelector('#player-two').disabled = true;
@@ -200,7 +245,7 @@ const GameMenuUI = function() {
     document.querySelector('.player-two-confirm-button').textContent = 'Confirm';
   }
 
-  return {playGameButton, playAgainButton, getPlayerOne, getPlayerTwo};
+  return {playGameButton, playAgainButton};
 }
 
 GameMenuUI().playGameButton();
