@@ -33,7 +33,9 @@ const Board = function() {
   return {getBoard, markSquare, markRandomSquare, getRandomRowValue, getRandomColumnValue};
 }
 
-const Players = function() {
+const GameLoop = function() {
+  const board = Board();
+
   const players = [{
     name: 'Player One',
     marker: 'X'
@@ -43,30 +45,21 @@ const Players = function() {
     marker: 'O'
   }];
 
-  const getPlayers = () => players;
-
-  return {getPlayers};
-}
-
-const GameLoop = function() {
-  const board = Board();
-  const players = Players();
-  const gameUI = GameUI();
-  const gameMenuUI = GameMenuUI();
-
-  let activePlayer = players.getPlayers()[0];
+  let activePlayer = players[0];
 
   const switchActivePlayer = () => {
-    activePlayer = activePlayer === players.getPlayers()[0] ? players.getPlayers()[1] : players.getPlayers()[0];
+    activePlayer = activePlayer === players[0] ? players[1] : players[0];
   }
 
-  const playGame = () => {
+  const playGame = (vsComputer) => {
+    const gameUI = GameUI();
     console.log('Hello');
     gameUI.removeBoardUI();
-    gameUI.buildBoardUI(board.getBoard());
+    gameUI.buildBoardUI(vsComputer, board.getBoard());
   }
 
   const playRoundVsPlayer = (row, column) => {
+    const gameUI = GameUI();
     if(board.getBoard()[row][column] !== '') {
       console.log('Square already taken, please choose another one.');
       return
@@ -77,13 +70,14 @@ const GameLoop = function() {
     if(victoriousPlayer !== 0) {
       displayResult();
       endGame();
-      gameMenuUI.playAgainButton();
+      gameUI.playAgainButton();
       return
     }
     switchActivePlayer();
   }
 
   const playRoundVsComputer = (row, column) => {
+    const gameUI = GameUI();
     if(board.getBoard()[row][column] !== '') {
       console.log('Square already taken, please choose another one.');
       return
@@ -94,7 +88,7 @@ const GameLoop = function() {
     if(victoriousPlayer !== 0) {
       displayResult();
       endGame();
-      gameMenuUI.playAgainButton();
+      gameUI.playAgainButton();
       return;
     }
     board.markRandomSquare();
@@ -103,7 +97,7 @@ const GameLoop = function() {
     if(victoriousPlayer !== 0) {
       displayResult();
       endGame();
-      gameMenuUI.playAgainButton();
+      gameUI.playAgainButton();
       return;
     }
   }
@@ -113,17 +107,17 @@ const GameLoop = function() {
   const checkResult = (board) => {
     for(let i = 0; i < 3; i++) {
       if(board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
-        if(board[i][0] === 'X') victoriousPlayer = players.getPlayers()[0];
-        if(board[i][0] === 'O') victoriousPlayer = players.getPlayers()[1];
+        if(board[i][0] === 'X') victoriousPlayer = players[0];
+        if(board[i][0] === 'O') victoriousPlayer = players[1];
       } else if(board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
-        if(board[0][i] === 'X') victoriousPlayer = players.getPlayers()[0];
-        if(board[0][i] === 'O') victoriousPlayer = players.getPlayers()[1];
+        if(board[0][i] === 'X') victoriousPlayer = players[0];
+        if(board[0][i] === 'O') victoriousPlayer = players[1];
       }
     }
     if((board[0][0] === board[1][1] && board[1][1] === board[2][2]) ||
        (board[0][2] === board[1][1] && board[1][1] === board[2][0])) {
-        if(board[1][1] === 'X') victoriousPlayer = players.getPlayers()[0];
-        if(board[1][1] === 'O') victoriousPlayer = players.getPlayers()[1];
+        if(board[1][1] === 'X') victoriousPlayer = players[0];
+        if(board[1][1] === 'O') victoriousPlayer = players[1];
     }
     if(board[0][0] !== '' && board[0][1] !== '' && board[0][2] !== '' &&
        board[1][0] !== '' && board[1][1] !== '' && board[1][2] !== '' &&
@@ -146,11 +140,10 @@ const GameLoop = function() {
 }
 
 const GameUI = function() {
+  const gameLoop = GameLoop();
   const boardContainer = document.querySelector('.board-container');
 
-  const buildBoardUI = (board) => {
-    const gameLoop = GameLoop();
-    const gameMenuUI = GameMenuUI();
+  const buildBoardUI = (vsComputer, board) => {
 
     board.forEach((row, rowIndex) => row.forEach((column, columnIndex) => {
       const newDiv = boardContainer.appendChild(document.createElement('div'));
@@ -158,7 +151,7 @@ const GameUI = function() {
       newButton.dataset.row = rowIndex;
       newButton.dataset.column = columnIndex;
       newButton.textContent = board[rowIndex][columnIndex];
-      if() {
+      if(vsComputer) {
         newButton.addEventListener('click', () => gameLoop.playRoundVsComputer(newButton.dataset.row, newButton.dataset.column));
       } else {
         newButton.addEventListener('click', () => gameLoop.playRoundVsPlayer(newButton.dataset.row, newButton.dataset.column));
@@ -176,11 +169,6 @@ const GameUI = function() {
     document.querySelector(`[data-row='${row}'][data-column='${column}']`).textContent = board[row][column];
   }
 
-  return {buildBoardUI, removeBoardUI, showSquareValue};
-}
-
-const GameMenuUI = function() {
-
   const playGameButton = () => document.querySelector('.play-game-button').addEventListener('click', () => {
     document.querySelector('.welcome-container').classList.add('hidden');
     document.querySelector('.game-mode-container').classList.remove('hidden');
@@ -196,13 +184,13 @@ const GameMenuUI = function() {
   });
 
   const vsComputerButton = () => document.querySelector('.vs-computer').addEventListener('click', () => {
+    let vsComputer = true;
     document.querySelector('.game-mode-container').classList.add('hidden');
     document.querySelector('.main-game').classList.remove('hidden');
-    GameLoop().playGame();
+    gameLoop.playGame(vsComputer);
   });
 
   const playerOneConfirmButton = () => document.querySelector('.player-one-confirm-button').addEventListener('click', () => {
-    playerOne = document.querySelector('#player-one').value;
     if(document.querySelector('.player-two-confirm-button').textContent === 'Confirm') {
       document.querySelector('.player-one-confirm-button').textContent = 'Waiting for player two';
       document.querySelector('#player-one').disabled = true;
@@ -210,12 +198,11 @@ const GameMenuUI = function() {
     } else {
       document.querySelector('.player-names-container').classList.add('hidden');
       document.querySelector('.main-game').classList.remove('hidden');
-      GameLoop().playGame();
+      gameLoop.playGame();
     }
   });
 
   const playerTwoConfirmButton = () => document.querySelector('.player-two-confirm-button').addEventListener('click', () => {
-    playerTwo = document.querySelector('#player-two').value;
     if(document.querySelector('.player-one-confirm-button').textContent === 'Confirm') {
       document.querySelector('.player-two-confirm-button').textContent = 'Waiting for player one';
       document.querySelector('#player-two').disabled = true;
@@ -223,7 +210,7 @@ const GameMenuUI = function() {
     } else {
       document.querySelector('.player-names-container').classList.add('hidden');
       document.querySelector('.main-game').classList.remove('hidden');
-      GameLoop().playGame();
+      gameLoop.playGame();
     }
   });
 
@@ -245,7 +232,7 @@ const GameMenuUI = function() {
     document.querySelector('.player-two-confirm-button').textContent = 'Confirm';
   }
 
-  return {playGameButton, playAgainButton};
+  return {buildBoardUI, removeBoardUI, showSquareValue, playGameButton, playAgainButton};
 }
 
-GameMenuUI().playGameButton();
+GameUI().playGameButton();
