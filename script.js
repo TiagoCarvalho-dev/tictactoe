@@ -177,80 +177,91 @@ const GameUI = function() {
     document.querySelector(`[data-row='${row}'][data-column='${column}']`).textContent = board[row][column];
   }
 
+  const gameModeContainer = document.querySelector('.game-mode-container');
+  const playerNamesContainer = document.querySelector('.player-names-container');
+  const playerNameVsComputerContainer = document.querySelector('.player-name-vs-computer-container');
+  const playerOneVsComputer = document.querySelector('#player-one-vs-computer');
+  const mainGame = document.querySelector('.main-game');
+  const playerOne = document.querySelector('#player-one');
+  const playerTwo = document.querySelector('#player-two');
+  const playerOneConfirm = document.querySelector('.player-one-confirm-button');
+  const playerTwoConfirm = document.querySelector('.player-two-confirm-button');
+
   const playGameButton = () => document.querySelector('.play-game-button').addEventListener('click', () => {
     document.querySelector('.welcome-container').classList.add('hidden');
-    document.querySelector('.game-mode-container').classList.remove('hidden');
+    gameModeContainer.classList.remove('hidden');
     vsPlayerButton();
     vsComputerButton();
   });
 
   const vsPlayerButton = () => document.querySelector('.vs-player').addEventListener('click', () => {
-    document.querySelector('.game-mode-container').classList.add('hidden');
-    document.querySelector('.player-names-container').classList.remove('hidden');
+    gameModeContainer.classList.add('hidden');
+    playerNamesContainer.classList.remove('hidden');
     playerOneConfirmButton();
     playerTwoConfirmButton();
   });
 
   const vsComputerButton = () => document.querySelector('.vs-computer').addEventListener('click', () => {
     let vsComputer = true;
-    document.querySelector('.game-mode-container').classList.add('hidden');
-    document.querySelector('.player-name-vs-computer-container').classList.remove('hidden');
+    gameModeContainer.classList.add('hidden');
+    playerNameVsComputerContainer.classList.remove('hidden');
     playerOneVsComputerConfirmButton(vsComputer);
   });
 
   const playerOneVsComputerConfirmButton = (vsComputer) => {
     document.querySelector('.player-one-vs-computer-confirm-button').addEventListener('click', () => {
-    playerOne = document.querySelector('#player-one-vs-computer').value;
-    document.querySelector('.player-name-vs-computer-container').classList.add('hidden');
-    document.querySelector('.main-game').classList.remove('hidden');
-    GameLoop().playGame(playerOne, '', vsComputer);
+    playerOneName = playerOneVsComputer.value;
+    playerNameVsComputerContainer.classList.add('hidden');
+    mainGame.classList.remove('hidden');
+    GameLoop().playGame(playerOneName, '', vsComputer);
   })};
 
-  let playerOne;
-  let playerTwo;
+  let playerOneName;
+  let playerTwoName;
 
-  const playerOneConfirmButton = () => document.querySelector('.player-one-confirm-button').addEventListener('click', () => {
-    playerOne = document.querySelector('#player-one').value;
-    if(document.querySelector('.player-two-confirm-button').textContent === 'Confirm') {
-      document.querySelector('.player-one-confirm-button').textContent = 'Waiting for player two';
-      document.querySelector('#player-one').disabled = true;
-      document.querySelector('.player-one-confirm-button').disabled = true;
+  const playerOneConfirmButton = () => playerOneConfirm.addEventListener('click', () => {
+    playerOne = playerOne.value;
+    if(playerTwoConfirm.textContent === 'Confirm') {
+      playerOneConfirm.textContent = 'Waiting for player two';
+      playerOne.disabled = true;
+      playerOneConfirm.disabled = true;
     } else {
-      document.querySelector('.player-names-container').classList.add('hidden');
-      document.querySelector('.main-game').classList.remove('hidden');
-      GameLoop().playGame(playerOne, playerTwo);
+      playerNamesContainer.classList.add('hidden');
+      mainGame.classList.remove('hidden');
+      GameLoop().playGame(playerOneName, playerTwoName);
     }
   });
 
-  const playerTwoConfirmButton = () => document.querySelector('.player-two-confirm-button').addEventListener('click', () => {
-    playerTwo = document.querySelector('#player-two').value;
-    if(document.querySelector('.player-one-confirm-button').textContent === 'Confirm') {
-      document.querySelector('.player-two-confirm-button').textContent = 'Waiting for player one';
-      document.querySelector('#player-two').disabled = true;
-      document.querySelector('.player-two-confirm-button').disabled = true;
+  const playerTwoConfirmButton = () => playerTwoConfirm.addEventListener('click', () => {
+    playerTwo = playerTwo.value;
+    if(playerOneConfirm.textContent === 'Confirm') {
+      playerTwoConfirm.textContent = 'Waiting for player one';
+      playerTwo.disabled = true;
+      playerTwoConfirm.disabled = true;
     } else {
-      document.querySelector('.player-names-container').classList.add('hidden');
-      document.querySelector('.main-game').classList.remove('hidden');
-      GameLoop().playGame(playerOne, playerTwo);
+      playerNamesContainer.classList.add('hidden');
+      mainGame.classList.remove('hidden');
+      GameLoop().playGame(playerOneName, playerTwoName);
     }
   });
 
   const playAgainButton = () => document.querySelector('.play-again-button').addEventListener('click', () => {
-    document.querySelector('.main-game').classList.add('hidden');
-    document.querySelector('.game-mode-container').classList.remove('hidden');
+    mainGame.classList.add('hidden');
+    gameModeContainer.classList.remove('hidden');
     resetPlayerInformation();
     playGameButton();
   });
 
   const resetPlayerInformation = () => {
-    document.querySelector('#player-one').value = '';
-    document.querySelector('#player-two').value = '';
-    document.querySelector('.player-one-confirm-button').disabled = false;
-    document.querySelector('.player-two-confirm-button').disabled = false;
-    document.querySelector('#player-one').disabled = false;
-    document.querySelector('#player-two').disabled = false;
-    document.querySelector('.player-one-confirm-button').textContent = 'Confirm';
-    document.querySelector('.player-two-confirm-button').textContent = 'Confirm';
+    playerOneVsComputer.value = '';
+    playerOne.value = '';
+    playerTwo.value = '';
+    playerOneConfirm.disabled = false;
+    playerTwoConfirm.disabled = false;
+    playerOne.disabled = false;
+    playerTwo.disabled = false;
+    playerOneConfirm.textContent = 'Confirm';
+    playerTwoConfirm.textContent = 'Confirm';
   }
 
   return {buildBoardUI, removeBoardUI, showSquareValue, playGameButton, playAgainButton};
