@@ -33,15 +33,16 @@ const Board = function() {
   return {getBoard, markSquare, markRandomSquare, getRandomRowValue, getRandomColumnValue};
 }
 
-const GameLoop = function() {
+const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
   const board = Board();
+  const gameUI = GameUI();
 
   const players = [{
-    name: 'Player One',
+    name: playerOne,
     marker: 'X'
   },
   {
-    name: 'Player Two',
+    name: playerTwo,
     marker: 'O'
   }];
 
@@ -51,15 +52,13 @@ const GameLoop = function() {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   }
 
-  const playGame = (vsComputer) => {
-    const gameUI = GameUI();
+  const playGame = (playerOne, playerTwo, vsComputer) => {
     console.log('Hello');
     gameUI.removeBoardUI();
-    gameUI.buildBoardUI(vsComputer, board.getBoard());
+    gameUI.buildBoardUI(playerOne, playerTwo, vsComputer, board.getBoard());
   }
 
   const playRoundVsPlayer = (row, column) => {
-    const gameUI = GameUI();
     if(board.getBoard()[row][column] !== '') {
       console.log('Square already taken, please choose another one.');
       return
@@ -77,7 +76,6 @@ const GameLoop = function() {
   }
 
   const playRoundVsComputer = (row, column) => {
-    const gameUI = GameUI();
     if(board.getBoard()[row][column] !== '') {
       console.log('Square already taken, please choose another one.');
       return
@@ -86,7 +84,7 @@ const GameLoop = function() {
     gameUI.showSquareValue(row, column, board.getBoard());
     checkResult(board.getBoard());
     if(victoriousPlayer !== 0) {
-      displayResult();
+      displayResultVsComputer();
       endGame();
       gameUI.playAgainButton();
       return;
@@ -95,7 +93,7 @@ const GameLoop = function() {
     gameUI.showSquareValue(board.getRandomRowValue(), board.getRandomColumnValue(), board.getBoard());
     checkResult(board.getBoard());
     if(victoriousPlayer !== 0) {
-      displayResult();
+      displayResultVsComputer();
       endGame();
       gameUI.playAgainButton();
       return;
@@ -134,16 +132,26 @@ const GameLoop = function() {
     }
   }
 
+  const displayResultVsComputer = () => {
+    if(victoriousPlayer === 'No one') {
+      return console.log(`The game ended in a Draw!`);
+    } else if(victoriousPlayer === players[0]) {
+      return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
+    } else {
+      return console.log(`Better luck next time ${players[0].name}, you LOST!`)
+    }
+  }
+
   const endGame = () => document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
 
   return {playGame, playRoundVsPlayer, playRoundVsComputer};
 }
 
 const GameUI = function() {
-  const gameLoop = GameLoop();
   const boardContainer = document.querySelector('.board-container');
 
-  const buildBoardUI = (vsComputer, board) => {
+  const buildBoardUI = (playerOne, playerTwo, vsComputer, board) => {
+    const gameLoop = GameLoop(playerOne, playerTwo);
 
     board.forEach((row, rowIndex) => row.forEach((column, columnIndex) => {
       const newDiv = boardContainer.appendChild(document.createElement('div'));
@@ -186,11 +194,23 @@ const GameUI = function() {
   const vsComputerButton = () => document.querySelector('.vs-computer').addEventListener('click', () => {
     let vsComputer = true;
     document.querySelector('.game-mode-container').classList.add('hidden');
-    document.querySelector('.main-game').classList.remove('hidden');
-    gameLoop.playGame(vsComputer);
+    document.querySelector('.player-name-vs-computer-container').classList.remove('hidden');
+    playerOneVsComputerConfirmButton(vsComputer);
   });
 
+  const playerOneVsComputerConfirmButton = (vsComputer) => {
+    document.querySelector('.player-one-vs-computer-confirm-button').addEventListener('click', () => {
+    playerOne = document.querySelector('#player-one-vs-computer').value;
+    document.querySelector('.player-name-vs-computer-container').classList.add('hidden');
+    document.querySelector('.main-game').classList.remove('hidden');
+    GameLoop().playGame(playerOne, '', vsComputer);
+  })};
+
+  let playerOne;
+  let playerTwo;
+
   const playerOneConfirmButton = () => document.querySelector('.player-one-confirm-button').addEventListener('click', () => {
+    playerOne = document.querySelector('#player-one').value;
     if(document.querySelector('.player-two-confirm-button').textContent === 'Confirm') {
       document.querySelector('.player-one-confirm-button').textContent = 'Waiting for player two';
       document.querySelector('#player-one').disabled = true;
@@ -198,11 +218,12 @@ const GameUI = function() {
     } else {
       document.querySelector('.player-names-container').classList.add('hidden');
       document.querySelector('.main-game').classList.remove('hidden');
-      gameLoop.playGame();
+      GameLoop().playGame(playerOne, playerTwo);
     }
   });
 
   const playerTwoConfirmButton = () => document.querySelector('.player-two-confirm-button').addEventListener('click', () => {
+    playerTwo = document.querySelector('#player-two').value;
     if(document.querySelector('.player-one-confirm-button').textContent === 'Confirm') {
       document.querySelector('.player-two-confirm-button').textContent = 'Waiting for player one';
       document.querySelector('#player-two').disabled = true;
@@ -210,7 +231,7 @@ const GameUI = function() {
     } else {
       document.querySelector('.player-names-container').classList.add('hidden');
       document.querySelector('.main-game').classList.remove('hidden');
-      gameLoop.playGame();
+      GameLoop().playGame(playerOne, playerTwo);
     }
   });
 
