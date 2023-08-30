@@ -55,7 +55,7 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
     }
   }
 
-  let activePlayer;
+  let activePlayer = players[0];
 
   const switchActivePlayer = () => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
