@@ -46,7 +46,16 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
     marker: 'O'
   }];
 
-  let activePlayer = players[0];
+  const chooseFirstPlayerToMove = () => {
+    let firstMove = Math.floor(Math.random() * 2);
+    if(firstMove === 1) {
+      activePlayer = players[0];
+    } else {
+      activePlayer = players[1];
+    }
+  }
+
+  let activePlayer;
 
   const switchActivePlayer = () => {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -151,7 +160,7 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
 
   const disableBoard = () => document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
 
-  return {playGame, playRoundVsPlayer, playRoundVsComputer, getActivePlayer};
+  return {playGame, playRoundVsPlayer, playRoundVsComputer, getActivePlayer, chooseFirstPlayerToMove};
 }
 
 const GameUI = function() {
@@ -169,6 +178,7 @@ const GameUI = function() {
       if(vsComputer) {
         newButton.addEventListener('click', () => gameLoop.playRoundVsComputer(newButton.dataset.row, newButton.dataset.column, vsComputer));
       } else {
+        gameLoop.chooseFirstPlayerToMove();
         playerTurnInformation.textContent = `It\'s ${gameLoop.getActivePlayer().name}'s turn`;
         newButton.addEventListener('click', () => gameLoop.playRoundVsPlayer(newButton.dataset.row, newButton.dataset.column));
       }
