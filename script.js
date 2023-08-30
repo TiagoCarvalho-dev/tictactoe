@@ -70,11 +70,11 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
   }
 
   const playRoundVsPlayer = (row, column) => {
-    gameUI.changePlayerTurnInformation(activePlayer, players);
     if(board.getBoard()[row][column] !== '') {
       gameUI.changeGameInformation('Square already taken, please choose another one.');
       return
     }
+    gameUI.changePlayerTurnInformation(activePlayer, players);
     gameUI.changeGameInformation('');
     playerTurn(row, column);
     checkResult();
