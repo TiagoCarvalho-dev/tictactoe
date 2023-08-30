@@ -63,46 +63,48 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
       console.log('Square already taken, please choose another one.');
       return
     }
-    board.markSquare(activePlayer.marker, row, column, board.getBoard());
-    gameUI.showSquareValue(row, column, board.getBoard());
-    checkResult(board.getBoard());
-    if(victoriousPlayer !== 0) {
-      displayResult();
-      endGame();
-      gameUI.playAgainButton();
-      return
-    }
+    playerTurn(row, column);
+    checkResult();
     switchActivePlayer();
   }
 
-  const playRoundVsComputer = (row, column) => {
+  const playRoundVsComputer = (row, column, vsComputer) => {
     if(board.getBoard()[row][column] !== '') {
       console.log('Square already taken, please choose another one.');
       return
     }
+    playerTurn(row, column);
+    checkResult(vsComputer);
+    if(victoriousPlayer !== 0) return;
+    setTimeout(() => {
+      computerTurn();
+      checkResult(vsComputer);
+    }, 700);
+    if(victoriousPlayer !== 0) return;
+  }
+
+  const playerTurn = (row, column) => {
     board.markSquare(activePlayer.marker, row, column, board.getBoard());
     gameUI.showSquareValue(row, column, board.getBoard());
-    checkResult(board.getBoard());
-    if(victoriousPlayer !== 0) {
-      displayResultVsComputer();
-      endGame();
-      gameUI.playAgainButton();
-      return;
-    }
+  }
+
+  const computerTurn = () => {
     board.markRandomSquare();
     gameUI.showSquareValue(board.getRandomRowValue(), board.getRandomColumnValue(), board.getBoard());
-    checkResult(board.getBoard());
+  }
+
+  const checkResult = (vsComputer) => {
+    checkBoard(board.getBoard());
     if(victoriousPlayer !== 0) {
-      displayResultVsComputer();
-      endGame();
+      displayResult(vsComputer);
       gameUI.playAgainButton();
-      return;
+      disableBoard();
     }
   }
 
   let victoriousPlayer = 0;
 
-  const checkResult = (board) => {
+  const checkBoard = (board) => {
     for(let i = 0; i < 3; i++) {
       if(board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
         if(board[i][0] === 'X') victoriousPlayer = players[0];
@@ -124,25 +126,25 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
     }
   }
 
-  const displayResult = () => {
-    if(victoriousPlayer === 'No one') {
-      return console.log(`The game ended in a Draw!`);
+  const displayResult = (vsComputer) => {
+    if(vsComputer) {
+      if(victoriousPlayer === 'No one') {
+        return console.log(`The game ended in a Draw!`);
+      } else if (victoriousPlayer === players[0]) {
+        return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
+      } else {
+        return console.log('Better luck next time, you LOST!');
+      }
     } else {
-      return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
+      if(victoriousPlayer === 'No one') {
+        return console.log(`The game ended in a Draw!`);
+      } else {
+        return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
+      }
     }
   }
 
-  const displayResultVsComputer = () => {
-    if(victoriousPlayer === 'No one') {
-      return console.log(`The game ended in a Draw!`);
-    } else if(victoriousPlayer === players[0]) {
-      return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
-    } else {
-      return console.log(`Better luck next time ${players[0].name}, you LOST!`)
-    }
-  }
-
-  const endGame = () => document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
+  const disableBoard = () => document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
 
   return {playGame, playRoundVsPlayer, playRoundVsComputer};
 }
@@ -160,7 +162,7 @@ const GameUI = function() {
       newButton.dataset.column = columnIndex;
       newButton.textContent = board[rowIndex][columnIndex];
       if(vsComputer) {
-        newButton.addEventListener('click', () => gameLoop.playRoundVsComputer(newButton.dataset.row, newButton.dataset.column));
+        newButton.addEventListener('click', () => gameLoop.playRoundVsComputer(newButton.dataset.row, newButton.dataset.column, vsComputer));
       } else {
         newButton.addEventListener('click', () => gameLoop.playRoundVsPlayer(newButton.dataset.row, newButton.dataset.column));
       }
@@ -180,10 +182,10 @@ const GameUI = function() {
   const gameModeContainer = document.querySelector('.game-mode-container');
   const playerNamesContainer = document.querySelector('.player-names-container');
   const playerNameVsComputerContainer = document.querySelector('.player-name-vs-computer-container');
-  const playerOneVsComputer = document.querySelector('#player-one-vs-computer');
+  let playerOneVsComputer = document.querySelector('#player-one-vs-computer');
   const mainGame = document.querySelector('.main-game');
-  const playerOne = document.querySelector('#player-one');
-  const playerTwo = document.querySelector('#player-two');
+  let playerOne = document.querySelector('#player-one');
+  let playerTwo = document.querySelector('#player-two');
   const playerOneConfirm = document.querySelector('.player-one-confirm-button');
   const playerTwoConfirm = document.querySelector('.player-two-confirm-button');
 
@@ -220,7 +222,7 @@ const GameUI = function() {
   let playerTwoName;
 
   const playerOneConfirmButton = () => playerOneConfirm.addEventListener('click', () => {
-    playerOne = playerOne.value;
+    playerOneName = playerOne.value;
     if(playerTwoConfirm.textContent === 'Confirm') {
       playerOneConfirm.textContent = 'Waiting for player two';
       playerOne.disabled = true;
@@ -233,7 +235,7 @@ const GameUI = function() {
   });
 
   const playerTwoConfirmButton = () => playerTwoConfirm.addEventListener('click', () => {
-    playerTwo = playerTwo.value;
+    playerTwoName = playerTwo.value;
     if(playerOneConfirm.textContent === 'Confirm') {
       playerTwoConfirm.textContent = 'Waiting for player one';
       playerTwo.disabled = true;
