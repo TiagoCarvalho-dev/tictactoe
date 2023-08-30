@@ -52,17 +52,21 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   }
 
+  const getActivePlayer = () => activePlayer;
+
   const playGame = (playerOne, playerTwo, vsComputer) => {
-    console.log('Hello');
+    gameUI.changeGameInformation('May the best player win');
     gameUI.removeBoardUI();
     gameUI.buildBoardUI(playerOne, playerTwo, vsComputer, board.getBoard());
   }
 
   const playRoundVsPlayer = (row, column) => {
+    gameUI.changePlayerTurnInformation(activePlayer, players);
     if(board.getBoard()[row][column] !== '') {
-      console.log('Square already taken, please choose another one.');
+      gameUI.changeGameInformation('Square already taken, please choose another one.');
       return
     }
+    gameUI.changeGameInformation('');
     playerTurn(row, column);
     checkResult();
     switchActivePlayer();
@@ -70,9 +74,10 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
 
   const playRoundVsComputer = (row, column, vsComputer) => {
     if(board.getBoard()[row][column] !== '') {
-      console.log('Square already taken, please choose another one.');
+      gameUI.changeGameInformation('Square already taken, please choose another one.');
       return
     }
+    gameUI.changeGameInformation('');
     playerTurn(row, column);
     checkResult(vsComputer);
     if(victoriousPlayer !== 0) return;
@@ -129,24 +134,24 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
   const displayResult = (vsComputer) => {
     if(vsComputer) {
       if(victoriousPlayer === 'No one') {
-        return console.log(`The game ended in a Draw!`);
+        return gameUI.changeGameInformation(`The game ended in a Draw!`);
       } else if (victoriousPlayer === players[0]) {
-        return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
+        return gameUI.changeGameInformation(`Congratulations ${victoriousPlayer.name}, you WON!`);
       } else {
-        return console.log('Better luck next time, you LOST!');
+        return gameUI.changeGameInformation('Better luck next time, you LOST!');
       }
     } else {
       if(victoriousPlayer === 'No one') {
-        return console.log(`The game ended in a Draw!`);
+        return gameUI.changeGameInformation(`The game ended in a Draw!`);
       } else {
-        return console.log(`Congratulations ${victoriousPlayer.name}, you WON!`);
+        return gameUI.changeGameInformation(`Congratulations ${victoriousPlayer.name}, you WON!`);
       }
     }
   }
 
   const disableBoard = () => document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
 
-  return {playGame, playRoundVsPlayer, playRoundVsComputer};
+  return {playGame, playRoundVsPlayer, playRoundVsComputer, getActivePlayer};
 }
 
 const GameUI = function() {
@@ -164,6 +169,7 @@ const GameUI = function() {
       if(vsComputer) {
         newButton.addEventListener('click', () => gameLoop.playRoundVsComputer(newButton.dataset.row, newButton.dataset.column, vsComputer));
       } else {
+        playerTurnInformation.textContent = `It\'s ${gameLoop.getActivePlayer().name}'s turn`;
         newButton.addEventListener('click', () => gameLoop.playRoundVsPlayer(newButton.dataset.row, newButton.dataset.column));
       }
     }));
@@ -188,6 +194,9 @@ const GameUI = function() {
   let playerTwo = document.querySelector('#player-two');
   const playerOneConfirm = document.querySelector('.player-one-confirm-button');
   const playerTwoConfirm = document.querySelector('.player-two-confirm-button');
+  const playAgain = document.querySelector('.play-again-button');
+  const gameInformation = document.querySelector('.game-information');
+  const playerTurnInformation = document.querySelector('.player-turn-information');
 
   const playGameButton = () => document.querySelector('.play-game-button').addEventListener('click', () => {
     document.querySelector('.welcome-container').classList.add('hidden');
@@ -247,12 +256,16 @@ const GameUI = function() {
     }
   });
 
-  const playAgainButton = () => document.querySelector('.play-again-button').addEventListener('click', () => {
+  const playAgainButton = () => {
+    playAgain.classList.remove('hidden');
+    playerTurnInformation.textContent = '';
+    playAgain.addEventListener('click', () => {
     mainGame.classList.add('hidden');
     gameModeContainer.classList.remove('hidden');
+    playAgain.classList.add('hidden');
     resetPlayerInformation();
     playGameButton();
-  });
+  })};
 
   const resetPlayerInformation = () => {
     playerOneVsComputer.value = '';
@@ -266,7 +279,19 @@ const GameUI = function() {
     playerTwoConfirm.textContent = 'Confirm';
   }
 
-  return {buildBoardUI, removeBoardUI, showSquareValue, playGameButton, playAgainButton};
+  const changeGameInformation = (message) => {
+    gameInformation.textContent = message;
+  }
+
+  const changePlayerTurnInformation = (activePlayer, players) => {
+    if(activePlayer === players[0]) {
+      playerTurnInformation.textContent = `It\'s ${players[1].name}'s turn`;
+    } else {
+      playerTurnInformation.textContent = `It\'s ${players[0].name}'s turn`;
+    }
+  }
+
+  return {buildBoardUI, removeBoardUI, showSquareValue, playGameButton, playAgainButton, changeGameInformation, changePlayerTurnInformation};
 }
 
 GameUI().playGameButton();

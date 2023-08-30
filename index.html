@@ -14,10 +14,12 @@
     <button class="play-game-button">PLAY GAME</button>
   </div>
   <div class="game-mode-container hidden" >
+    <h2>Please select the game mode</h2>
     <button class="vs-player">VS Player</button>
     <button class="vs-computer">VS Computer</button>
   </div>
   <div class="player-names-container hidden">
+    <h2>Who is playing?</h2>
     <div class="player-one-container">
       <label for="player-one">Player One:</label>
       <input type="text" id="player-one" name="player-one">
@@ -35,12 +37,13 @@
     <button class="player-one-vs-computer-confirm-button">Confirm</button>
   </div>
   <div class="main-game hidden">
+    <div class="game-information-container">
+      <h2 class="game-information"></h2>
+      <h3 class="player-turn-information"></h3>
+    </div>
     <div class="board-container">
     </div>
-    <div class="result-screen-container">
-      <h2 class="congratulatory-message"></h2>
-      <button class="play-again-button">Play Again</button>
-    </div>
+    <button class="play-again-button hidden">Play Again</button>
   </div>
   <footer>
     <p>Copyright ©</p>
