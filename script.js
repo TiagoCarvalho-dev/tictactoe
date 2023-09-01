@@ -124,24 +124,24 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
     for(let i = 0; i < 3; i++) {
       if((board[i][0] === board[i][1] && board[i][1] === board[i][2]) &&
           board[i][0] !== '' && board[i][1] !== '' && board[i][2] !== '') {
-        gameUI.markWinningStreak('row', i);
+        gameUI.markWinningSequence('row', i);
         if(board[i][0] === 'X') return victoriousPlayer = players[0];
         if(board[i][0] === 'O') return victoriousPlayer = players[1];
       } else if((board[0][i] === board[1][i] && board[1][i] === board[2][i]) &&
                  board[0][i] !== '' && board[1][i] !== '' && board[2][i] !== '') {
-        gameUI.markWinningStreak('column', i);
+        gameUI.markWinningSequence('column', i);
         if(board[0][i] === 'X') return victoriousPlayer = players[0];
         if(board[0][i] === 'O') return victoriousPlayer = players[1];
       }
     }
     if((board[0][0] === board[1][1] && board[1][1] === board[2][2]) && 
         board[0][0] !== '' && board[1][1] !== '' && board[2][2] !== '') {
-        gameUI.markWinningStreak('diagonal1');
+        gameUI.markWinningSequence('diagonal1');
         if(board[1][1] === 'X') return victoriousPlayer = players[0];
         if(board[1][1] === 'O') return victoriousPlayer = players[1];
     } else if((board[0][2] === board[1][1] && board[1][1] === board[2][0]) && 
                board[0][2] !== '' && board[1][1] !== '' && board[2][0] !== '') {
-        gameUI.markWinningStreak('diagonal2');
+        gameUI.markWinningSequence('diagonal2');
         if(board[1][1] === 'X') return victoriousPlayer = players[0];
         if(board[1][1] === 'O') return victoriousPlayer = players[1];
     }
@@ -319,25 +319,25 @@ const GameUI = function() {
     }
   }
 
-  const markWinningStreak = (reference, index) => {
+  const markWinningSequence = (reference, index) => {
     if(reference === 'row') {
-      document.querySelector(`[data-row='${index}'][data-column='0']`).classList.add('winning-streak-color');
-      document.querySelector(`[data-row='${index}'][data-column='1']`).classList.add('winning-streak-color');
-      document.querySelector(`[data-row='${index}'][data-column='2']`).classList.add('winning-streak-color');
+      document.querySelector(`[data-row='${index}'][data-column='0']`).classList.add('winning-sequence-color');
+      document.querySelector(`[data-row='${index}'][data-column='1']`).classList.add('winning-sequence-color');
+      document.querySelector(`[data-row='${index}'][data-column='2']`).classList.add('winning-sequence-color');
       return
     } else if(reference === 'column') {
-      document.querySelector(`[data-row='0'][data-column='${index}']`).classList.add('winning-streak-color');
-      document.querySelector(`[data-row='1'][data-column='${index}']`).classList.add('winning-streak-color');
-      document.querySelector(`[data-row='2'][data-column='${index}']`).classList.add('winning-streak-color');
+      document.querySelector(`[data-row='0'][data-column='${index}']`).classList.add('winning-sequence-color');
+      document.querySelector(`[data-row='1'][data-column='${index}']`).classList.add('winning-sequence-color');
+      document.querySelector(`[data-row='2'][data-column='${index}']`).classList.add('winning-sequence-color');
       return
     } else if(reference === 'diagonal1') {
-      document.querySelector(`[data-row='0'][data-column='0']`).classList.add('winning-streak-color');
-      document.querySelector(`[data-row='1'][data-column='1']`).classList.add('winning-streak-color');
-      document.querySelector(`[data-row='2'][data-column='2']`).classList.add('winning-streak-color');
+      document.querySelector(`[data-row='0'][data-column='0']`).classList.add('winning-sequence-color');
+      document.querySelector(`[data-row='1'][data-column='1']`).classList.add('winning-sequence-color');
+      document.querySelector(`[data-row='2'][data-column='2']`).classList.add('winning-sequence-color');
     } else if(reference === 'diagonal2') {
-      document.querySelector(`[data-row='0'][data-column='2']`).classList.add('winning-streak-color');
-      document.querySelector(`[data-row='1'][data-column='1']`).classList.add('winning-streak-color');
-      document.querySelector(`[data-row='2'][data-column='0']`).classList.add('winning-streak-color');
+      document.querySelector(`[data-row='0'][data-column='2']`).classList.add('winning-sequence-color');
+      document.querySelector(`[data-row='1'][data-column='1']`).classList.add('winning-sequence-color');
+      document.querySelector(`[data-row='2'][data-column='0']`).classList.add('winning-sequence-color');
     }
   }
 
@@ -349,7 +349,7 @@ const GameUI = function() {
     playAgainButton, 
     changeGameInformation, 
     changePlayerTurnInformation, 
-    markWinningStreak
+    markWinningSequence
   };
 }
 
