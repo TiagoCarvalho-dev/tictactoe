@@ -88,14 +88,14 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
     }
     gameUI.changeGameInformation('');
     playerTurn(row, column);
-    // toggleBoard('disable');
+    toggleBoard('disable');
     checkResult(vsComputer);
     if(victoriousPlayer !== 0) return;
     setTimeout(() => {
+      toggleBoard('enable');
       computerTurn();
       checkResult(vsComputer);
     }, 700);
-    // toggleBoard('enable');
     if(victoriousPlayer !== 0) return;
   }
 
@@ -114,7 +114,6 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
     if(victoriousPlayer !== 0) {
       displayResult(vsComputer);
       gameUI.playAgainButton();
-      // toggleBoard('disable');
     }
   }
 
@@ -153,6 +152,7 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
   }
 
   const displayResult = (vsComputer) => {
+    toggleBoard('disable');
     if(vsComputer) {
       if(victoriousPlayer === 'No one') {
         return gameUI.changeGameInformation(`The game ended in a Draw!`);
@@ -170,13 +170,13 @@ const GameLoop = function(playerOne = 'Player One', playerTwo = 'Player Two') {
     }
   }
 
-  // const toggleBoard = (state) => {
-  //   if(state === 'enable') {
-  //     document.querySelectorAll('.board-container button').forEach(button => button.disabled = false);
-  //   } else {
-  //     document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
-  //   }
-  // }
+  const toggleBoard = (state) => {
+    if(state === 'enable') {
+      document.querySelectorAll('.board-container button').forEach(button => button.disabled = false);
+    } else {
+      document.querySelectorAll('.board-container button').forEach(button => button.disabled = true);
+    }
+  }
 
   return {playGame, playRoundVsPlayer, playRoundVsComputer, getActivePlayer, chooseFirstPlayerToMove};
 }
@@ -321,19 +321,19 @@ const GameUI = function() {
 
   const markWinningSequence = (reference, index) => {
     if(reference === 'row') {
-      document.querySelector(`[data-row='${index}'][data-column='0']`).classList.add('winning-sequence-color');
-      document.querySelector(`[data-row='${index}'][data-column='1']`).classList.add('winning-sequence-color');
-      document.querySelector(`[data-row='${index}'][data-column='2']`).classList.add('winning-sequence-color');
+      for(let i = 0; i < 3; i++) {
+        document.querySelector(`[data-row='${index}'][data-column='${i}']`).classList.add('winning-sequence-color');
+      }
       return
     } else if(reference === 'column') {
-      document.querySelector(`[data-row='0'][data-column='${index}']`).classList.add('winning-sequence-color');
-      document.querySelector(`[data-row='1'][data-column='${index}']`).classList.add('winning-sequence-color');
-      document.querySelector(`[data-row='2'][data-column='${index}']`).classList.add('winning-sequence-color');
+      for(let j = 0; j < 3; j++) {
+        document.querySelector(`[data-row='${j}'][data-column='${index}']`).classList.add('winning-sequence-color');
+      }
       return
     } else if(reference === 'diagonal1') {
-      document.querySelector(`[data-row='0'][data-column='0']`).classList.add('winning-sequence-color');
-      document.querySelector(`[data-row='1'][data-column='1']`).classList.add('winning-sequence-color');
-      document.querySelector(`[data-row='2'][data-column='2']`).classList.add('winning-sequence-color');
+      for(let k = 0; k < 3; k++) {
+        document.querySelector(`[data-row='${k}'][data-column='${k}']`).classList.add('winning-sequence-color');
+      }
     } else if(reference === 'diagonal2') {
       document.querySelector(`[data-row='0'][data-column='2']`).classList.add('winning-sequence-color');
       document.querySelector(`[data-row='1'][data-column='1']`).classList.add('winning-sequence-color');
