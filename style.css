@@ -32,6 +32,10 @@ body {
   width: 140px;
 }
 
+.winning-streak-color {
+  color: red;
+}
+
 footer {
   display: flex;
   justify-content: center;
