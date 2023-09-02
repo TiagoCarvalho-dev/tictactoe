@@ -1,7 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&family=Vollkorn&display=swap');
+
+:root {
+  font-family: 'Roboto', system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  box-sizing: border-box;
+  --secondary-color: rgb(72, 72, 72);
+  --background-color: rgb(202, 202, 202);
+  --buttons-main-color: rgb(185, 180, 199);
+  --buttons-secondary-color: rgb(92, 84, 112);
+}
+
 body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: var(--background-color);
 }
 
 .welcome-container {
@@ -9,6 +21,49 @@ body {
   flex-direction: column;
   align-items: center;
   margin: auto;
+}
+
+.welcome-container > h1 {
+  color: var(--secondary-color);
+  font-size: 4.4rem;
+  text-align: center;
+}
+
+.welcome-container button,
+.game-mode-container button {
+  appearance: none;
+  color: var(--buttons-secondary-color);
+  background-color: var(--buttons-main-color);
+  font-size: 2.3rem;
+  border: solid 4px var(--buttons-secondary-color);
+  padding: 1rem;
+}
+
+.welcome-container button:hover,
+.game-mode-container button:hover {
+  transform: scale(1.02);
+  transition: all 0.1s;
+}
+
+.game-mode-container,
+.player-names-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+}
+
+.game-mode-buttons-container {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  flex-wrap: wrap;
+}
+
+.game-mode-container h2 {
+  color: var(--secondary-color);
+  font-size: 3.5rem;
+  text-align: center;
 }
 
 .main-game {
@@ -42,6 +97,8 @@ footer {
   align-items: center;
   gap: 8px;
   margin-top: auto;
+  color: var(--secondary-color);
+  font-size: 1.2rem;
 }
 
 .hidden {
