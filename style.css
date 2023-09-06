@@ -40,7 +40,8 @@ body {
 }
 
 .welcome-container button:hover,
-.game-mode-container button:hover {
+.game-mode-container button:hover,
+.player-names-container button:hover {
   transform: scale(1.02);
   transition: all 0.1s;
 }
@@ -51,6 +52,7 @@ body {
   flex-direction: column;
   align-items: center;
   margin: auto;
+  gap: 1.5rem;
 }
 
 .game-mode-buttons-container {
@@ -60,10 +62,49 @@ body {
   flex-wrap: wrap;
 }
 
-.game-mode-container h2 {
+.players-container {
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+}
+
+.player-one-container,
+.player-two-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.game-mode-container h2,
+.player-names-container h2 {
   color: var(--secondary-color);
   font-size: 3.5rem;
   text-align: center;
+}
+
+.player-one-container > label,
+.player-two-container > label {
+  color: var(--secondary-color);
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+#player-one,
+#player-two {
+  color: var(--secondary-color);
+  font-size: 1.5rem;
+  text-align: center;
+  background-color: var(--background-color);
+  border: solid 2px var(--secondary-color);
+}
+
+.player-names-container button {
+  appearance: none;
+  color: var(--buttons-secondary-color);
+  background-color: var(--buttons-main-color);
+  font-size: 1.3rem;
+  border: solid 3px var(--buttons-secondary-color);
+  padding: 0.5rem;
 }
 
 .main-game {
