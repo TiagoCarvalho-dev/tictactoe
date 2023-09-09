@@ -25,21 +25,23 @@
     <div class="players-container">
       <div class="player-one-container">
         <label for="player-one">PLAYER ONE:</label>
-        <input type="text" id="player-one" name="player-one">
+        <input type="text" id="player-one" name="player-one" maxlength="12">
         <button class="player-one-confirm-button">CONFIRM</button>
       </div>
       <div class="player-two-container">
         <label for="player-two">PLAYER TWO:</label>
-        <input type="text" id="player-two" name="player-two">
+        <input type="text" id="player-two" name="player-two" maxlength="12">
         <button class="player-two-confirm-button">CONFIRM</button>
       </div>
     </div>
   </div>
   <div class="player-name-vs-computer-container hidden">
-    <h2>Who is playing?</h2>
-    <label for="player-one-vs-computer">PLAYER ONE:</label>
-    <input type="text" id="player-one-vs-computer" name="player-one-vs-computer">
-    <button class="player-one-vs-computer-confirm-button">CONFIRM</button>
+    <div class="player-name-vs-computer-sub">
+      <h2>WHO IS PLAYING?</h2>
+      <label for="player-one-vs-computer">PLAYER ONE:</label>
+      <input type="text" id="player-one-vs-computer" name="player-one-vs-computer" maxlength="12">
+      <button class="player-one-vs-computer-confirm-button">CONFIRM</button>
+    </div>
   </div>
   <div class="main-game hidden">
     <div class="game-information-container">
@@ -48,7 +50,7 @@
     </div>
     <div class="board-container">
     </div>
-    <div class="next-game-buttons-container hidden">
+    <div class="next-game-buttons-container invisible">
       <button class="rematch-button">REMATCH</button>
       <button class="new-game-button">NEW GAME</button>
     </div>

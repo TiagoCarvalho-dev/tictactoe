@@ -7,6 +7,10 @@
   --background-color: rgb(202, 202, 202);
   --buttons-main-color: rgb(185, 180, 199);
   --buttons-secondary-color: rgb(92, 84, 112);
+  --buttons-waiting-text-color: rgb(71, 139, 50);
+  --buttons-waiting-color: rgba(113, 247, 108, 0.459);
+  --player-turn-color: rgb(72, 70, 192);
+  --winning-sequence-color: rgb(223, 45, 45);
 }
 
 body {
@@ -41,13 +45,17 @@ body {
 
 .welcome-container button:hover,
 .game-mode-container button:hover,
-.player-names-container button:hover {
+.player-names-container button:hover,
+.player-one-vs-computer-confirm-button:hover,
+.rematch-button:hover,
+.new-game-button:hover {
   transform: scale(1.02);
   transition: all 0.1s;
 }
 
 .game-mode-container,
-.player-names-container {
+.player-names-container,
+.player-name-vs-computer-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,35 +70,40 @@ body {
   flex-wrap: wrap;
 }
 
-.players-container {
+.players-container,
+.player-name-vs-computer-container {
   display: flex;
   justify-content: center;
   gap: 4rem;
 }
 
 .player-one-container,
-.player-two-container {
+.player-two-container,
+.player-name-vs-computer-sub {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
 .game-mode-container h2,
-.player-names-container h2 {
+.player-names-container h2,
+.player-name-vs-computer-container h2 {
   color: var(--secondary-color);
   font-size: 3.5rem;
   text-align: center;
 }
 
 .player-one-container > label,
-.player-two-container > label {
+.player-two-container > label,
+.player-name-vs-computer-sub > label {
   color: var(--secondary-color);
   font-size: 1.5rem;
   text-align: center;
 }
 
 #player-one,
-#player-two {
+#player-two,
+#player-one-vs-computer {
   color: var(--secondary-color);
   font-size: 1.5rem;
   text-align: center;
@@ -98,7 +111,8 @@ body {
   border: solid 2px var(--secondary-color);
 }
 
-.player-names-container button {
+.player-names-container button,
+.player-name-vs-computer-container button {
   appearance: none;
   color: var(--buttons-secondary-color);
   background-color: var(--buttons-main-color);
@@ -107,29 +121,81 @@ body {
   padding: 0.5rem;
 }
 
+.player-one-confirm-button:disabled,
+.player-two-confirm-button:disabled {
+  color: var(--buttons-waiting-text-color);
+  background-color: var(--buttons-waiting-color);
+  border: solid 3px var(--buttons-waiting-text-color);
+}
+
 .main-game {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  gap: 4rem;
+}
+
+.game-information {
+  color: var(--secondary-color);
+  font-size: 2.5rem;
+  text-align: center;
+}
+
+.player-turn-information {
+  color: var(--secondary-color);
+  font-size: 1.8rem;
+  text-align: center;
 }
 
 .board-container {
   display: grid;
-  grid-template-columns: repeat(3, 150px);
-  grid-template-rows: repeat(3, 150px);
-  border: solid 2px black;
-}
-
-.board-container > div {
-  border: solid 2px red;
+  grid-template-columns: repeat(3, 121px);
+  grid-template-rows: repeat(3, 121px);
+  justify-items: center;
+  align-items: center;
+  background-image: url(./images/board.png);
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
 .board-container > div > button {
-  height: 140px;
-  width: 140px;
+  height: 90px;
+  width: 90px;
+  font-size: 4rem;
+  border: none;
+  background-color: var(--background-color);
+  text-align: center;
+  vertical-align: top;
+}
+
+.board-container > div > button:disabled {
+  height: 90px;
+  width: 90px;
+  font-size: 4rem;
+  border: none;
+  background-color: var(--background-color);
+  text-align: center;
+  line-height: normal;
+}
+
+.next-game-buttons-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.rematch-button,
+.new-game-button {
+  appearance: none;
+  color: var(--buttons-secondary-color);
+  background-color: var(--buttons-main-color);
+  font-size: 2rem;
+  border: solid 3px var(--buttons-secondary-color);
+  padding: 0.5rem;
 }
 
 .winning-sequence-color {
-  color: red;
+  color: var(--winning-sequence-color);
 }
 
 footer {
@@ -144,4 +210,8 @@ footer {
 
 .hidden {
   display: none;
+}
+
+.invisible {
+  opacity: 0;
 }
